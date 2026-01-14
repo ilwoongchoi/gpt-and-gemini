@@ -1,27 +1,21 @@
-# Role Definition: Collaborative Framework Development
-
-This repository is a shared workspace between two AI entities and the User. All AI agents must adhere to their specific roles to ensure consistency.
+# AGENT COLLABORATION PROTOCOL: INSPECTOR (CHATGPT) & WORKER (GEMINI)
 
 ## 1. THE ROLES
-- **INSPECTOR (ChatGPT via Web/Connected Repo):** - **Function:** High-level architect and code reviewer.
-    - **Responsibilities:** Analyzes the framework's overall structure, identifies bugs or technical debt, and issues "Work Orders." 
-    - **Output:** Provides structured guidance and logic flow. He should document his decisions in `/docs/work_orders.md`.
+- **WORKER (Gemini on Cursor):** Implementation specialist. 
+  - **MANDATE:** For every task completed, Gemini MUST generate a `REPORT.md` in the `/reports` directory.
+  - **REPORT CONTENT:** Summary of changes, logic used, and any technical trade-offs made.
 
-- **WORKER (Gemini via Cursor IDE):** - **Function:** Implementation specialist and codebase executor.
-    - **Responsibilities:** Reads the "Work Orders" from ChatGPT, executes the code changes using `@Codebase`, and ensures the framework remains functional.
-    - **Output:** Clean, production-ready code and updated documentation of what was changed.
+- **INSPECTOR (ChatGPT via Web):** Quality Control & Auditor.
+  - **MANDATE:** ChatGPT must scan the `/reports` and the associated code. 
+  - **AUDIT CONTENT:** ChatGPT must produce an `AUDIT.md` correcting errors, identifying security risks, and approving or rejecting the implementation.
 
-## 2. THE WORKFLOW (The Loop)
-1. **The Inspector (ChatGPT)** reads the current state of the repo. He writes a detailed plan in `docs/current_task.md` or as a message to the User.
-2. **The Worker (Gemini on Cursor)** uses the `@Codebase` feature to index the repo. He looks for the latest instructions in the `docs/` folder or via the User's prompt.
-3. **The Worker** implements the code, runs tests, and commits the changes with a descriptive message.
-4. **The Inspector** reviews the new commits via the GitHub connection and provides feedback for the next iteration.
+## 2. THE FEEDBACK LOOP
+1. **Gemini (Worker):** Codes the feature -> Writes `reports/REPORT_v1.md` -> Pushes to GitHub.
+2. **ChatGPT (Inspector):** Reads the Push -> Reviews code/report -> Writes `reports/AUDIT_v1.md` -> Directs next steps.
+3. **Gemini (Worker):** Reads `AUDIT_v1.md` -> Fixes code -> Updates Report -> Pushes to GitHub.
 
-## 3. COMMUNICATION PROTOCOL
-- **Syncing:** Every time a major feature is finished, the Worker MUST update `README.md` or a `CHANGELOG.md` so the Inspector knows what has changed without re-reading every file.
-- **Framework Integrity:** The Worker is forbidden from changing core architectural patterns unless the Inspector explicitly orders it in writing within the repo docs.
-- **No Hallucinations:** If the Worker is unsure about a framework dependency, he must leave a comment and wait for the Inspector's guidance.
-
-## 4. TECHNICAL CONSTRAINTS
-- Use [Insert Language: e.g., Python/TypeScript] standards.
-- Maintain [Insert Style: e.g., Functional/OOP] patterns as defined in the existing `/src` folder.
+## 3. REPORTING STANDARDS (FOR GEMINI)
+Every report must include:
+- **Status:** (Success/Partial/Failed)
+- **Impact:** Which files were modified.
+- **Verification:** How the worker verified the framework still functions.
